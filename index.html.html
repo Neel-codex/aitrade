@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Alpha Crypto Terminal | High Potential Only</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        body { 
+            background-color: #0d1117; 
+            color: #c9d1d9; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        .navbar { background-color: #161b22 !important; border-bottom: 1px solid #30363d; backdrop-filter: blur(10px); }
+        .card { background-color: #161b22; border: 1px solid #30363d; border-radius: 12px; }
+        
+        /* Custom Colors */
+        .text-danger-custom { color: #ff7b72 !important; }
+        .text-success-custom { color: #3fb950 !important; }
+        .text-gold { color: #e3b341 !important; }
+        
+        /* Responsive Table Styling */
+        .table-dark { background-color: transparent; margin-bottom: 0; }
+        .table-dark th { border-bottom: 2px solid #30363d; color: #8b949e; font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap;}
+        .table-dark td { border-bottom: 1px solid #30363d; vertical-align: middle; white-space: nowrap; }
+        .table-hover tbody tr:hover { background-color: #21262d; }
+        
+        /* Mobile Optimizations */
+        @media (max-width: 768px) {
+            .hide-mobile { display: none !important; }
+            .card { border-radius: 0; border-left: none; border-right: none; }
+            body { padding-bottom: 20px; }
+            .container-fluid { padding-left: 0; padding-right: 0; }
+            .px-custom { padding-left: 15px !important; padding-right: 15px !important; }
+        }
+        @media (min-width: 769px) {
+            .px-custom { padding-left: 24px !important; padding-right: 24px !important; }
+        }
+
+        /* UI Elements */
+        .timer-box { background: #21262d; border: 1px solid #30363d; padding: 4px 12px; border-radius: 20px; font-family: monospace; font-size: 1rem; }
+        .loader { border: 2px solid #30363d; border-top: 2px solid #e3b341; border-radius: 50%; width: 16px; height: 16px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .volume-badge { background-color: rgba(63, 185, 80, 0.15); border: 1px solid rgba(63, 185, 80, 0.4); color: #3fb950; padding: 3px 8px; border-radius: 6px; font-size: 0.8rem; font-weight: bold;}
+        .target-badge { background-color: #e3b341; color: #0d1117; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; margin-left: 8px;}
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-dark mb-3 mb-md-4 py-2 py-md-3 sticky-top shadow-sm">
+    <div class="container-fluid px-custom">
+        <a class="navbar-brand fw-bold fs-5" href="#">
+            <i class="fa fa-diamond text-gold"></i> Alpha Terminal
+        </a>
+        <div class="d-flex align-items-center">
+            <div class="timer-box me-2 text-gold" id="countdown-display">
+                60s
+            </div>
+            <button id="refresh-btn" class="btn btn-outline-secondary btn-sm rounded-pill px-3" onclick="manualRefresh()">
+                <i class="fa fa-refresh"></i> <span class="hide-mobile">Refresh</span>
+            </button>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid px-custom pb-5">
+
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-end mb-2 px-2 px-md-0">
+                <h5 class="mb-0 text-success-custom fw-bold"><i class="fa fa-rocket"></i> High-Conviction Breakouts</h5>
+            </div>
+            <p class="text-muted small px-2 px-md-0 mb-3 hide-mobile">
+                <strong>Criteria:</strong> Down >10% in 7 days, UP >5% today, Min Volume $10M.
+            </p>
+            <div class="card p-0 overflow-hidden">
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th class="px-3 px-md-4 py-3">Asset</th>
+                                <th class="py-3">Price</th>
+                                <th class="py-3 hide-mobile">7D Trend</th>
+                                <th class="py-3 text-success-custom">24H Surge</th>
+                                <th class="py-3">Volume</th>
+                                <th class="py-3 text-end px-3 px-md-4">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="early-buy-body">
+                            <tr><td colspan="6" class="text-center py-5 text-muted"><div class="loader me-2"></div> Scanning market...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-end mb-2 px-2 px-md-0">
+                <h5 class="mb-0 text-gold fw-bold"><i class="fa fa-bullseye"></i> Deep Value Swings</h5>
+            </div>
+            <p class="text-muted small px-2 px-md-0 mb-3 hide-mobile">
+                <strong>Criteria:</strong> Down 20% to 60% in 30 days, Min Volume $25M.
+            </p>
+            <div class="card p-0 overflow-hidden">
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th class="px-3 px-md-4 py-3">Asset</th>
+                                <th class="py-3">Price</th>
+                                <th class="py-3 text-danger-custom">30D Crash</th>
+                                <th class="py-3 hide-mobile">24H Change</th>
+                                <th class="py-3">Volume</th>
+                                <th class="py-3 text-end px-3 px-md-4">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="swing-body">
+                            <tr><td colspan="6" class="text-center py-5 text-muted"><div class="loader me-2"></div> Scanning market...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    const API_URL = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=1&sparkline=false&price_change_percentage=7d,30d';
+    
+    // Strict Institutional Filters
+    const MIN_BREAKOUT_VOLUME = 10000000; // $10M
+    const MIN_SWING_VOLUME = 25000000;    // $25M
+    
+    let countdownInterval;
+    let secondsLeft = 60;
+    let isFetching = false;
+
+    // Mobile-friendly formatting
+    const formatCurrency = (num) => {
+        if (!num) return '$0.00';
+        // Drop decimals for large numbers to save space on mobile
+        if (num > 1000) return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(num);
+        return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 4 }).format(num);
+    };
+    
+    const formatVolume = (num) => {
+        if (!num) return '$0';
+        return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', notation: "compact", maximumFractionDigits: 1 }).format(num);
+    };
+
+    function startTimer() {
+        clearInterval(countdownInterval);
+        const display = document.getElementById('countdown-display');
+        countdownInterval = setInterval(() => {
+            if (isFetching) return; 
+            secondsLeft--;
+            display.innerHTML = `${secondsLeft}s`;
+            if (secondsLeft <= 0) fetchData();
+        }, 1000);
+    }
+
+    function manualRefresh() {
+        if(!isFetching) fetchData();
+    }
+
+    async function fetchData() {
+        isFetching = true;
+        const swingBody = document.getElementById('swing-body');
+        const earlyBuyBody = document.getElementById('early-buy-body');
+        const refreshBtn = document.getElementById('refresh-btn');
+
+        refreshBtn.disabled = true;
+        refreshBtn.innerHTML = '<div class="loader"></div>';
+
+        try {
+            const response = await fetch(API_URL);
+            if (!response.ok) throw new Error(response.status === 429 ? "Rate limit hit. Wait 1 min." : `API Error`);
+            const data = await response.json();
+            
+            // 1. HIGH POTENTIAL BREAKOUTS
+            // Down > 10% in 7d, Up > 5% in 24h, Volume > $10M
+            let breakoutCoins = data.filter(coin => {
+                const drop7d = coin.price_change_percentage_7d_in_currency;
+                const change24h = coin.price_change_percentage_24h;
+                const vol = coin.total_volume;
+                return drop7d <= -10.0 && change24h >= 5.0 && vol >= MIN_BREAKOUT_VOLUME;
+            }).sort((a, b) => b.price_change_percentage_24h - a.price_change_percentage_24h);
+
+            // 2. DEEP VALUE SWINGS
+            // Down 20% to 60% in 30d, Volume > $25M
+            let swingCoins = data.filter(coin => {
+                const drop30d = coin.price_change_percentage_30d_in_currency;
+                const vol = coin.total_volume;
+                return drop30d <= -20.0 && drop30d >= -60.0 && vol >= MIN_SWING_VOLUME;
+            }).sort((a, b) => b.total_volume - a.total_volume); // Sort by liquidity
+
+            // RENDER BREAKOUTS
+            earlyBuyBody.innerHTML = '';
+            if (breakoutCoins.length === 0) {
+                earlyBuyBody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted"><i class="fa fa-coffee mb-2"></i><br>No strict breakout setups right now.</td></tr>`;
+            } else {
+                breakoutCoins.slice(0, 10).forEach((coin) => {
+                    earlyBuyBody.innerHTML += `
+                        <tr>
+                            <td class="px-3 px-md-4 py-3">
+                                <div class="d-flex align-items-center">
+                                    <img src="${coin.image}" width="28" height="28" class="me-2 rounded-circle">
+                                    <div>
+                                        <div class="fw-bold text-white lh-1">${coin.symbol.toUpperCase()}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="py-3 fw-bold">${formatCurrency(coin.current_price)}</td>
+                            <td class="py-3 text-danger-custom hide-mobile"><i class="fa fa-caret-down"></i> ${coin.price_change_percentage_7d_in_currency.toFixed(1)}%</td>
+                            <td class="py-3 text-success-custom fw-bold"><i class="fa fa-rocket"></i> +${coin.price_change_percentage_24h.toFixed(1)}%</td>
+                            <td class="py-3"><span class="volume-badge">${formatVolume(coin.total_volume)}</span></td>
+                            <td class="py-3 text-end px-3 px-md-4"><a href="https://www.tradingview.com/symbols/${coin.symbol.toUpperCase()}USD/" target="_blank" class="btn btn-sm btn-success"><i class="fa fa-line-chart"></i> <span class="hide-mobile">Trade</span></a></td>
+                        </tr>
+                    `;
+                });
+            }
+
+            // RENDER SWINGS
+            swingBody.innerHTML = '';
+            if (swingCoins.length === 0) {
+                swingBody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted"><i class="fa fa-coffee mb-2"></i><br>No deep value setups right now.</td></tr>`;
+            } else {
+                swingCoins.slice(0, 15).forEach((coin, index) => {
+                    const topPick = index < 3 ? '<span class="target-badge">TOP PICK</span>' : '';
+                    const change24hColor = coin.price_change_percentage_24h >= 0 ? 'text-success-custom' : 'text-danger-custom';
+                    
+                    swingBody.innerHTML += `
+                        <tr>
+                            <td class="px-3 px-md-4 py-3">
+                                <div class="d-flex align-items-center">
+                                    <img src="${coin.image}" width="28" height="28" class="me-2 rounded-circle">
+                                    <div>
+                                        <div class="fw-bold text-white lh-1">${coin.symbol.toUpperCase()} ${topPick}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="py-3 fw-bold">${formatCurrency(coin.current_price)}</td>
+                            <td class="py-3 text-danger-custom fw-bold"><i class="fa fa-caret-down"></i> ${coin.price_change_percentage_30d_in_currency.toFixed(1)}%</td>
+                            <td class="py-3 ${change24hColor} hide-mobile">${coin.price_change_percentage_24h.toFixed(1)}%</td>
+                            <td class="py-3"><span class="volume-badge border-secondary text-light">${formatVolume(coin.total_volume)}</span></td>
+                            <td class="py-3 text-end px-3 px-md-4"><a href="https://www.tradingview.com/symbols/${coin.symbol.toUpperCase()}USD/" target="_blank" class="btn btn-sm btn-outline-secondary"><i class="fa fa-eye"></i></a></td>
+                        </tr>
+                    `;
+                });
+            }
+
+        } catch (error) {
+            earlyBuyBody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-danger-custom">${error.message}</td></tr>`;
+            swingBody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-danger-custom">${error.message}</td></tr>`;
+        } finally {
+            isFetching = false;
+            secondsLeft = 60;
+            refreshBtn.disabled = false;
+            refreshBtn.innerHTML = '<i class="fa fa-refresh"></i> <span class="hide-mobile">Refresh</span>';
+            startTimer(); 
+        }
+    }
+
+    fetchData();
+</script>
+</body>
+</html>
